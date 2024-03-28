@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import json
 from decoder_zoo.HALC.context_density.detector import Detector
-from transformers import Owlv2Processor, Owlv2ForObjectDetection
+from transformers import Owlv2Processor, Owlv2ForObjectDetection, AutoTokenizer, AutoModelForCausalLM
 from types import SimpleNamespace
 from PIL import Image, ImageDraw
 import spacy
@@ -13,6 +13,7 @@ from transformers import BlipProcessor, BlipModel
 import random
 from transformers import CLIPConfig, CLIPTextConfig, CLIPVisionConfig
 from PIL import Image, ImageFilter
+import hpsv2
 from mplug_owl2.mm_utils import (
     process_images,
     tokenizer_image_token,
@@ -102,6 +103,7 @@ class halc_assistant:
 
         score_type = halc_params["score_type"]
         if score_type == "CLIP":
+            self.score_type = "CLIP"
             if self.max_new_tokens > 77:
                 config_text = CLIPTextConfig(max_position_embeddings=self.max_new_tokens)
                 config_vision = CLIPVisionConfig()
@@ -122,16 +124,42 @@ class halc_assistant:
                     "openai/clip-vit-base-patch32"
                 )
         elif score_type == "BLIP":
+            self.score_type = "BLIP"
             self.score_model = BlipModel.from_pretrained("Salesforce/blip-image-captioning-large")
             self.score_processor = BlipProcessor.from_pretrained(
                 "Salesforce/blip-image-captioning-large"
             )
+        elif score_type == "Random":
+            self.score_type = "Random"
+            self.score_model = None
+            self.score_processor = None
+        elif score_type == "Perplexity":
+            self.score_type = "Perplexity"
+            self.score_processor = None
+            self.score_tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2")
+            self.score_model = AutoModelForCausalLM.from_pretrained("openai-community/gpt2", device_map="auto")
+        elif score_type == "HPSv2":
+            self.score_type = "HPSv2"
+            self.score_model = hpsv2
+            self.score_processor = None
+        else:
+            raise ValueError("Invalid score type!")
+
+
+    def calculate_perplexity(self, text):
+        input_ids = torch.tensor(self.score_tokenizer.encode(text)).unsqueeze(0)
+        input_ids = input_ids.to(self.device)
+        with torch.no_grad():
+            outputs = self.score_model(input_ids, labels=input_ids)
+        loss, logits = outputs[:2]
+        return torch.exp(loss).item()
 
     def update_input(self, img_path, input_prompt):
         # print("img_path", img_path)
         self.detector_dict = {"img_path": img_path}
         self.image_to_ground = Image.open(img_path)
         self.prompt = input_prompt
+        self.original_image = img_path
 
     def reset_info(self):
         self.detector_dict = None
@@ -1153,31 +1181,45 @@ class halc_assistant:
             # original_image = self.original_image
             original_image = self.image_to_ground
 
-            # print("candidate_texts", candidate_texts)
-            clip_inputs = self.score_processor(
-                text=candidate_texts,
-                images=original_image,
-                return_tensors="pt",
-                padding=True,
-                truncation=True,
-            )
+            if self.score_type == "CLIP" or self.score_type == "BLIP":
+                # print("candidate_texts", candidate_texts)
+                clip_inputs = self.score_processor(
+                    text=candidate_texts,
+                    images=original_image,
+                    return_tensors="pt",
+                    padding=True,
+                    truncation=True,
+                )
 
-            clip_outputs = self.score_model(**clip_inputs)
-            logits_per_image = (
-                clip_outputs.logits_per_image
-            )  # image-text similarity score
-            clip_probs = logits_per_image.softmax(dim=1)[
-                0
-            ]  # take the softmax to get the label probabilities
+                clip_outputs = self.score_model(**clip_inputs)
+                logits_per_image = (
+                    clip_outputs.logits_per_image
+                )  # image-text similarity score
+                clip_probs = logits_per_image.softmax(dim=1)[
+                    0
+                ]  # take the softmax to get the label probabilities
 
-            # print("candidate lists:", candidate_intermediate_token_lists_array)
-            # print("clip_probs:", clip_probs)
+                # print("candidate lists:", candidate_intermediate_token_lists_array)
+                # print("clip_probs:", clip_probs)
 
-            # # get the top beam_size candidates
-            clip_probs = clip_probs.cpu().numpy()
-            # candidate_index = clip_probs.argsort()[-beam_size:][::-1]
+                # # get the top beam_size candidates
+                clip_probs = clip_probs.cpu().numpy()
+                # candidate_index = clip_probs.argsort()[-beam_size:][::-1]
+                scores = clip_probs
 
-            sorted_indices = clip_probs.argsort()[
+            elif self.score_type == "HPSv2":
+                imgs_path = self.original_image
+                scores = hpsv2.score(imgs_path, candidate_texts, hps_version="v2.1")
+                scores = np.array(scores).tolist()
+
+            elif self.score_type == "Random":
+                scores = np.random.rand(len(candidate_texts)).tolist()
+
+            elif self.score_type == "Perplexity":
+                
+
+
+            sorted_indices = scores.argsort()[
                 -len(candidate_intermediate_token_lists_array) :
             ][::-1]
             selected_texts = set()

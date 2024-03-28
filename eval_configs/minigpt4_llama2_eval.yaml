@@ -1,5 +1,5 @@
 model:
-  arch: mplug-owl2
+  arch: mini_gpt4
   model_type: pretrain_llama2
   freeze_vit: True
   freeze_backbone: True
@@ -11,7 +11,7 @@ model:
   # prompt_path: "prompts/alignment.txt"
   prompt_template: 'USER: {} ASSISTANT: '
   system_message: "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions." 
-  merged_ckpt: "MAGAer13/mplug-owl2-llama2-7b"
+  merged_ckpt: "/home/czr/HaLC/model_checkpoints/pretrained_minigpt4_llama2_7b.pth"
 
 
 datasets:

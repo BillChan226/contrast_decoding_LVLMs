@@ -18,6 +18,8 @@ final_result/
 hallucination_results/
 hallucinatory_image/
 pope_coco/
+rebuttal/
+rebuttal_6SE4.md
 
 file_calculation.py
 get_model.py

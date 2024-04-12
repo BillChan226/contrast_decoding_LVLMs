@@ -69,9 +69,6 @@ def run_eval_chair(file_path, chair_only=False):
         )
 
         metrics = metrics if metrics else None
-
-        print("metrics", metrics)
-        input()
     
     else:
         result = subprocess.run(
@@ -81,10 +78,18 @@ def run_eval_chair(file_path, chair_only=False):
             text=True,
         )
 
+        # print("result", result)
+
         metrics = re.findall(
             r"\d+\.\d+",
             result.stdout.split("ground truth captions")[-1].split("CHAIR results")[0],
         )
+
+
+        # print("metrics", metrics)
+        # input()
+
+        # print("result.stdout", result.stdout)
 
         metrics = metrics if metrics else None
 
@@ -247,7 +252,7 @@ with open(csv_file_path, "w", newline="") as csvfile:
                     seed_number,
                     max_tokens,
                     num_samples,
-                    # skip_samples
+                    skip_samples
                 ) = extract_info_from_filename(file_name)
         
                 metrics = run_eval_chair(file_path)

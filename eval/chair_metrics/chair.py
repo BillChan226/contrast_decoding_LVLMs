@@ -59,7 +59,7 @@ class CHAIR(object):
         self.coco_path = coco_path
 
         # read in synonyms
-        synonyms = open("chair_metrics/data/synonyms.txt").readlines()
+        synonyms = open("eval/chair_metrics/data/synonyms.txt").readlines()
         synonyms = [s.strip().split(", ") for s in synonyms]
         self.mscoco_objects = []  # mscoco objects and *all* synonyms
         self.inverse_synonym_dict = {}

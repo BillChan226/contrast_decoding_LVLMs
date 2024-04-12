@@ -269,15 +269,17 @@ if verbosity:
 # image_path = "/home/czr/contrast_decoding_LVLMs/eval_dataset/val2014/COCO_val2014_000000085926.jpg" 
 # image_path = "/home/czr/contrast_decoding_LVLMs/eval_dataset/val2014/COCO_val2014_000000165257.jpg" # 162543
 # image_path = "/home/czr/HaLC/LLaVA-Bench/001.jpg"
-img_path_dir = "LLaVA-Bench/"
+img_path_dir = "/home/czr/MMHallucination/co-occurrence/dataset/image_to_text/high_cooc/object_existence/optimization/"
 img_path_list = os.listdir(img_path_dir)
-generated_captions_path = f"llava-bench/{decoding_strategy}_llava-1.5.json"
+# generated_captions_path = f"llava-bench/{decoding_strategy}_llava-1.5.json"
+
+img_path_list = ["/home/czr/MMHallucination/co-occurrence/dataset/image_to_text/high_cooc/object_existence/normal/bench_person/COCO_val2014_000000025244.jpg_inpainted.jpg"]
 
 print("img_path_list", img_path_list)
 for image_path in img_path_list:
     img_save = {}
     img_save["image_path"] = image_path
-    image_path = img_path_dir + image_path
+    # image_path = img_path_dir + image_path
     raw_image = Image.open(image_path).convert("RGB")
 
     if model_name == "mplug-owl2":
@@ -415,10 +417,13 @@ for image_path in img_path_list:
         print("corrected output_text", output_text)
 
 
+    print("image_path", image_path)
     print("caption: ", output_text)
     img_save["caption"] = output_text
 
-    with open(generated_captions_path, "a") as f:
-        json.dump(img_save, f)
-        f.write("\n")
+    input()
+
+    # with open(generated_captions_path, "a") as f:
+    #     json.dump(img_save, f)
+    #     f.write("\n")
 

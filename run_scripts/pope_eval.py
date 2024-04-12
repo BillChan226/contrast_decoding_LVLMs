@@ -89,7 +89,7 @@ def parse_args():
     parser.add_argument(
         "--data_path",
         type=str,
-        default="/home/czr/contrast_decoding_LVLMs/eval_dataset/val2014/",
+        default="/home/czr/dataset/val2014/",
         help="data path",
     )
     parser.add_argument("--batch_size", type=int, default=1, help="batch size")
@@ -155,7 +155,7 @@ def parse_args():
         "--cd_beta", type=float, default=0.1, help="Beta param for VCD."
     )
     parser.add_argument(
-        "--noise_step", type=int, default=500, help="Noise step for VCD."
+        "--noise_step", type=int, default=200, help="Noise step for VCD."
     )
     parser.add_argument(
         "--detector",

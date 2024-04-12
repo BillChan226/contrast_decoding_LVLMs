@@ -11,7 +11,7 @@ model:
   # prompt_path: "prompts/alignment.txt"
   prompt_template: 'USER: {} ASSISTANT: '
   system_message: "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions."
-  merged_ckpt: "/home/czr/.cache/huggingface/hub/llava-1.5/snapshots/12e054b30e8e061f423c7264bc97d4248232e965"
+  merged_ckpt: "/home/czr/.cache/huggingface/hub/lmodels--liuhaotian--llava-v1.5-7b/snapshots/12e054b30e8e061f423c7264bc97d4248232e965"
 
 
 datasets:

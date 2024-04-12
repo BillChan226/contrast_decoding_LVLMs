@@ -1,7 +1,7 @@
 import os
 import argparse
 import json
-from eval.chair_metrics import chair
+from chair_metrics import chair
 import numpy as np
 
 
@@ -41,7 +41,7 @@ def main():
     parser.add_argument(
         "--data_dir",
         type=str,
-        default="/home/czr/contrast_decoding_LVLMs/eval_dataset/val2014",
+        default="/home/czr/dataset/val2014/",
         help="Test data directory. Default is 'eval_dataset/val2014'.",
     )
     parser.add_argument(

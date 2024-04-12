@@ -116,6 +116,7 @@ class calculate_metrics:
                     img_name = img_id
                     # if img_name not in results_dict:
                     #     continue
+                    # print("caption_dict", caption_dict)
                     pred_caption = caption_dict[img_name]
                     gt_question = img_item
                     gt_ans = gt_items[gt_question]
@@ -192,9 +193,11 @@ if __name__ == "__main__":
     results_dir = args.results_dir
     save = args.save
 
-    subset_dir = ["MME_benchmark/MME_dataset/existence_modified", "MME_benchmark/MME_dataset/position_modified",
-                   "MME_benchmark/MME_dataset/color_modified", "MME_benchmark/MME_dataset/count_modified"]
+    # subset_dir = ["MME_benchmark/MME_dataset/existence_modified", "MME_benchmark/MME_dataset/position_modified",
+    #                "MME_benchmark/MME_dataset/color_modified", "MME_benchmark/MME_dataset/count_modified"]
     
+    subset_dir = ["MME_benchmark/MME_dataset/position_modified"]
+
 
     results_dict = {}
     if "generated_captions" not in results_dir:
@@ -255,6 +258,7 @@ if __name__ == "__main__":
         task_name = gt_dir.split("/")[-1].split("_")[0]
         # print(task_name, len(gt_dict))
         caption_score_list = []
+        print("gt_dict", gt_dict)
         caption_score, results_list = cal.process_result(results_dict, gt_dict, task_name)
 
         # for caption_name, caption_score in caption_score.items():

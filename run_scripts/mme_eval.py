@@ -159,7 +159,7 @@ parser.add_argument(
     default=False,
     help="Whether to use debugger output.",
 )
-parser.add_argument("--box_threshold", type=float, default=0.55, help="Box threshold for DINO.")
+parser.add_argument("--box_threshold", type=float, default=0.4, help="Box threshold for DINO.")
 parser.add_argument(
     "--gt_seg_path",
     type=str,
@@ -243,9 +243,10 @@ vis_processor = registry.get_processor_class(vis_processor_cfg.name).from_config
 valid_decoding_strategies = [
     "greedy",
     "dola",
-    "halc-dola",
-    "halc-greedy",
-    "halc-beam",
+    # "halc-dola",
+    # "halc-greedy",
+    # "halc-beam",
+    "halc",
     "opera-beam",
     "vcd",
 ]
@@ -360,8 +361,54 @@ halc_assistant_helper = halc_assistant(
 
 offlight = True
 
-for idx, img_id in tqdm(enumerate(range(len(img_files))), total=len(img_files)):
-    img_file = img_files[img_id]
+iterations = 2*len(img_files)
+
+result_txt = []
+
+for idx in tqdm(range(iterations)):
+    new_line = ""
+    img_file = img_files[int(idx/2)]
+    # if idx <= 23:
+    #     continue
+    # img_file = img_files[img_id]
+    new_line += img_file + "\t"
+    print("img_file", img_file)
+    txt_file = img_file.replace(".jpg", ".txt")
+    # get the first line of the txt file
+    if idx % 2 == 0:
+        with open(args.data_path + txt_file, "r") as f:
+            qu = f.readlines()[0]
+            # token_num = len(qu.split(" "))
+            # print("qu.split(" ")", qu.split(" "))
+            # input()
+            # qu = " ".join(qu.split(" ")[:-1])
+            if "Yes" in qu:
+                gt = "Yes"
+            else:
+                gt = "No"
+            qu = qu.replace("Yes", "")
+            qu = qu.replace("No", "")
+
+        print("idx % 2 == 0", qu)
+    else:
+        # get the second line of the txt file
+        with open(args.data_path + txt_file, "r") as f:
+            qu = f.readlines()[1]
+            # token_num = len(qu.split(" "))
+            # qu = " ".join(qu.split(" ")[:-1])
+            if "Yes" in qu:
+                gt = "Yes"
+            else:
+                gt = "No"
+            qu = qu.replace("Yes", "")
+            qu = qu.replace("No", "")
+            # gt = qu.split(" ")[-1]
+        print("idx % 2 == 1", qu)
+
+    # qu = str(qu)
+
+    new_line += qu + "\t" + gt + "\t"
+
     img_id = int(img_file.split(".jpg")[0][-6:])
 
     img_save = {}
@@ -381,11 +428,11 @@ for idx, img_id in tqdm(enumerate(range(len(img_files))), total=len(img_files)):
 
     # print("image device", norm(image).device)
 
-    qu = "Please describe this image in detail."
-    # qu = "Please provide a very detailed description of the image."
-    # qu = "Please provide a very long and detailed description of the image."
-    # qu = "Generate a one sentence caption of the image."
-    # qu = "Generate a short caption of the image."
+    # qu = "Please describe this image in detail."
+    # # qu = "Please provide a very detailed description of the image."
+    # # qu = "Please provide a very long and detailed description of the image."
+    # # qu = "Generate a one sentence caption of the image."
+    # # qu = "Generate a short caption of the image."
 
     template = INSTRUCTION_TEMPLATE[args.model]
     qu = template.replace("<question>", qu)
@@ -491,6 +538,8 @@ for idx, img_id in tqdm(enumerate(range(len(img_files))), total=len(img_files)):
     # print("img_id: ", img_id)
     print("image_path: ", image_path)
     print("caption: ", output_text)
+
+    new_line += output_text
     # input()
 
     # dump metric file
@@ -508,4 +557,14 @@ for idx, img_id in tqdm(enumerate(range(len(img_files))), total=len(img_files)):
     with open(generated_captions_path, "a") as f:
         json.dump(img_save, f)
         f.write("\n")
+    
+    # save txt
+    
+    new_line = new_line.replace("\n", "")
+    new_line = new_line.replace("\t\t", "\t")
+    new_line += "\n"
+    print({"new line":new_line})
+    result_txt.append(new_line)
+    with open(generated_captions_path.replace(".json", ".txt"), "w") as f:
+        f.writelines(result_txt)
 

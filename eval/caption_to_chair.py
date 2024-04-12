@@ -35,11 +35,19 @@ parser.add_argument(
     required=True,
     help="Path to the generated captions",
 )
+parser.add_argument(
+    "-d",
+    "--caption-path",
+    type=str,
+    required=False,
+    default="/home/czr/dataset/val2014/annotations/captions_val2014.json",
+    help="Path to the COCO ground-truth caption",
+)
 
 args = parser.parse_known_args()[0]
 
 directory = args.caption_path
-
+caption_path = args.caption_path
 
 # Assuming this script is placed in the same directory as the JSON files
 directory_path = directory
@@ -58,10 +66,10 @@ caption_files = [file for file in files if file.endswith("_generated_captions.js
 #     "/media/zhuokai/SN850X_4TB/Data/coco/annotations_all/captions_val2014.json"
 # )
 caption_file_path = (
-    "/home/czr/contrast_decoding_LVLMs/eval_dataset/val2014/annotations/captions_val2014.json"
+    caption_path
 )
 annotation_file_path = (
-    "/home/czr/contrast_decoding_LVLMs/eval_dataset/val2014/annotations/captions_val2014.json"
+    caption_path
 )
 # with open(args.data_path + '../annotations_trainval2014/annotations/instances_val2014.json', 'r') as f:
 with open(annotation_file_path, "r") as f:

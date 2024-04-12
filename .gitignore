@@ -17,9 +17,9 @@ chair_eval_replete.py/
 final_result/
 hallucination_results/
 hallucinatory_image/
-pope_coco/
 rebuttal/
-rebuttal_6SE4.md
+run_scripts/pope_eval_tempo.py
+backup/
 
 file_calculation.py
 get_model.py

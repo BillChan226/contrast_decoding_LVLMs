@@ -3528,12 +3528,21 @@ class GenerationMixin:
                 if this_peer_finished_flag.item() == 0.0:
                     break
 
+            
             # prepare model inputs
             model_inputs = self.prepare_inputs_for_generation(input_ids, **model_kwargs)
 
-            # print("model_inputs", model_inputs)
+            # print("model_kwargs", model_kwargs.keys())
+            # print("inputs_embeds", model_kwargs['inputs_embeds'])
+            # print("attention_mask", model_kwargs["attention_mask"])
+            # print("attention_mask", np.shape(model_kwargs["attention_mask"]))
+            # if "inputs_embeds" in model_kwargs:
+            #     print("inputs_embeds", np.shape(model_kwargs["inputs_embeds"]))
+            # elif "input_ids" in model_kwargs:
+            #     print("input_ids", np.shape(model_kwargs["input_ids"]))
+            #     # print(model_kwargs["input_ids"])
             # input()
-
+            # output_attentions = True
             # forward pass to get next token
             dict_outputs, outputs = self(
                 **model_inputs,
@@ -3542,6 +3551,9 @@ class GenerationMixin:
                 output_hidden_states=output_hidden_states,
                 early_exit_layers=early_exit_layers,
             )
+
+            # print("dict_outputs", dict_outputs.keys())
+            # input()
 
             # print("base_layer: ", base_layer)
             # print("candidate_premature_layers: ", candidate_premature_layers)

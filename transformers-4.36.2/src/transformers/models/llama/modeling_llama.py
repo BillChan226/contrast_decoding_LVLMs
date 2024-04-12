@@ -698,6 +698,11 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
             return_dict=return_dict,
         )
 
+        # print("outputs.attentions, ", outputs.attentions)
+        # for attention_layer in outputs.attentions:
+            # print("outputs.attentions shape, ", attention_layer.shape)
+            # input()
+
         if early_exit_layers is not None:
             logits_dict = {}
             # loss_dict = {}

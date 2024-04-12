@@ -77,7 +77,7 @@ class halc_assistant:
         self.max_new_tokens = max_new_tokens
 
         self.max_handle_box = 3
-        self.skip_rate = 0.3
+        self.skip_rate = 0 # 0.3
 
         self.exempt_word_list = exempt_word_list
         self.add_word_list = add_word_list
@@ -318,6 +318,8 @@ class halc_assistant:
         # print("pos", detect_info["pos"])
 
         valid_list = ["NOUN", "PROPN", "ADD"] #, "ADJ"]
+
+        # detect_info["pos"] = "NOUN"
 
         # if detect_info["pos_sm"] in valid_list or detect_info["pos_md"] in valid_list or detect_info["pos_lg"] in valid_list:
         if detect_info["pos"] in valid_list:
@@ -1216,7 +1218,13 @@ class halc_assistant:
                 scores = np.random.rand(len(candidate_texts)).tolist()
 
             elif self.score_type == "Perplexity":
-                
+                ppl_score_list = []
+                for candidate_text in candidate_texts:
+                    candidate_text = candidate_text.strip()
+                    ppl_score = self.calculate_perplexity(candidate_text)
+                    ppl_score_list.append(ppl_score)
+
+                scores = ppl_score_list
 
 
             sorted_indices = scores.argsort()[

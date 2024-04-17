@@ -20,7 +20,7 @@ This repository provides the official PyTorch implementation of the following pa
 > [Bo Li](https://aisecure.github.io/)<sup>1,4</sup>,
 > [Jiawei Zhou](https://sites.harvard.edu/jzhou/)<sup>5</sup>
 >
-> <sup>1</sup>University of Chicago, <sup>2</sup>Massachusetts Institute of Technology, <sup>3</sup>UNC-Chapel Hill <br> <sup>4</sup>University of Illinois at Urbana-Champaign, <sup>5</sup>Toyota Technological Institute at Chicago
+> <sup>1</sup>University of Chicago, <sup>2</sup>Massachusetts Institute of Technology, <sup>3</sup>UNC-Chapel Hill <br> <sup>4</sup>University of Illinois at Urbana-Champaign, <sup>5</sup>Toyota Technological Institute at Chicago <br>
 > <sub>*</sup> Equal contribution
 
 ## :partying_face: Features

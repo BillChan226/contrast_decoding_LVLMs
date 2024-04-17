@@ -25,7 +25,7 @@ This repository provides the official PyTorch implementation of the following pa
 
 ## :partying_face: Features
 
-:fire: We are activating extending HALC repo to more VLMs & decoders. Stay tuned! If you wish to add some algorithm/model or contribute, please feel free to reach out to us!
+:fire: We are actively enlarging HALC repo to support more VLMs & decoders. Stay tuned! If you wish to add some algorithm/model or contribute, please feel free to reach out to us!
 
 #### Currently supported online OH decoding methods
 

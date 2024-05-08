@@ -273,7 +273,8 @@ img_path_dir = "/home/czr/MMHallucination/co-occurrence/dataset/image_to_text/hi
 img_path_list = os.listdir(img_path_dir)
 # generated_captions_path = f"llava-bench/{decoding_strategy}_llava-1.5.json"
 
-img_path_list = ["/home/czr/MMHallucination/co-occurrence/dataset/image_to_text/high_cooc/object_existence/normal/bench_person/COCO_val2014_000000025244.jpg_inpainted.jpg"]
+img_path_list = ["/home/czr/MMHallucination/co-occurrence/dataset/image_to_text/high_cooc/object_existence/normal/person_surfboard/COCO_val2014_000000018358.jpg_inpainted.jpg", 
+                 "/home/czr/MMHallucination/co-occurrence/dataset/image_to_text/high_cooc/attribute/normal/pepper_red/COCO_val2014_000000243091.jpg_inpainted_pepper.jpg"]
 
 print("img_path_list", img_path_list)
 for image_path in img_path_list:

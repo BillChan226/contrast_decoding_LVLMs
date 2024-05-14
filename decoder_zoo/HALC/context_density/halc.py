@@ -24,8 +24,7 @@ from mplug_owl2.mm_utils import (
 exempt_word_list = ["image", "side", "background", "feature", "features", "center", 
                     "left", "right", "scene", "view", "s", "Birthday", "detail", "red",
                     "white", "cat", "horse", "bus", "group", "manner", "her", "birds", 
-                    "teddy", "stack", "cell", "toaster", "mirror", "toilet", "captures",
-                    "boat", "bench"]
+                    "teddy", "stack", "cell", "toaster", "mirror", "captures"]
 
 add_word_list = ["sink", "microwave", "toaster", "puppy", "bottle", "table", "oven", 
                 "orange", "toothbrush", "cars"]
@@ -77,7 +76,7 @@ class halc_assistant:
         self.max_new_tokens = max_new_tokens
 
         self.max_handle_box = 3
-        self.skip_rate = 0 # 0.3
+        self.skip_rate = 0.5
 
         self.exempt_word_list = exempt_word_list
         self.add_word_list = add_word_list

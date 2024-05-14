@@ -108,7 +108,7 @@ parser.add_argument(
 )
 parser.add_argument("--batch_size", type=int, default=1, help="batch size")
 parser.add_argument("--num_workers", type=int, default=2, help="num workers")
-parser.add_argument("-b", "--beam", type=int, default=3)
+parser.add_argument("-b", "--beam", type=int, default=1)
 parser.add_argument("--sample", action="store_true")
 parser.add_argument("--scale_factor", type=float, default=50)
 parser.add_argument("--threshold", type=int, default=15)
@@ -129,7 +129,7 @@ parser.add_argument(
     "-k",
     "--k-candidate-num",
     type=int,
-    default=4,
+    default=2,
     help="specify the k candidate number for halc.",
 )
 parser.add_argument(
@@ -240,9 +240,7 @@ model_config.device_8bit = args.gpu_id
 model_cls = registry.get_model_class(model_config.arch)
 model = model_cls.from_config(model_config).to(device)
 model.eval()
-print("model device", model.device)
 
-print("expand_ratio", expand_ratio)
 processor_cfg = cfg.get_config().preprocess
 processor_cfg.vis_processor.eval.do_normalize = False
 vis_processors, txt_processors = load_preprocess(processor_cfg)
@@ -256,9 +254,6 @@ vis_processor = registry.get_processor_class(vis_processor_cfg.name).from_config
 valid_decoding_strategies = [
     "greedy",
     "dola",
-    # "halc-dola",
-    # "halc-greedy",
-    # "halc-beam",
     "halc",
     "opera",
     "vcd",
@@ -290,15 +285,6 @@ if decoding_strategy == "greedy":
     pass
 elif decoding_strategy == "dola":
     dola_decoding = True
-# elif decoding_strategy == "halc-dola":
-#     dola_decoding = True
-#     halc_decoding = True
-# elif decoding_strategy == "halc-greedy":
-#     halc_decoding = True
-# elif decoding_strategy == "halc-beam":
-#     halc_decoding = True
-#     dola_decoding = True
-#     beam_search = True
 elif decoding_strategy == "halc":
     halc_decoding = True
     dola_decoding = True

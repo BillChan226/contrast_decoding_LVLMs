@@ -56,8 +56,8 @@ def eval_model(args):
             image_tensor_cd = None   
         
         pred = model.generate(
-            input_ids=input_ids.input_ids.cuda(),
-            attention_mask=input_ids.attention_mask.cuda(),
+            input_ids=input_ids.input_ids.to(model.device),
+            attention_mask=input_ids.attention_mask.to(model.device),
             do_sample=True,
             max_new_tokens=20,
             min_new_tokens=1,
@@ -70,10 +70,10 @@ def eval_model(args):
             temperature=args.temperature,
             top_p=args.top_p,
             top_k=args.top_k,
-            images = image_tensor,
+            images=image_tensor,
             images_cd=image_tensor_cd,
-            cd_beta = args.cd_beta,
-            cd_alpha = args.cd_alpha,
+            cd_beta=args.cd_beta,
+            cd_alpha=args.cd_alpha,
         )
 
         outputs = [

@@ -51,7 +51,7 @@ def eval_model(args):
         conv.append_message(conv.roles[1], None)
         prompt = conv.get_prompt()
 
-        input_ids = tokenizer_image_token(prompt, tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).cuda()
+        input_ids = tokenizer_image_token(prompt, tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).to(model.device)
 
         image = Image.open(os.path.join(args.image_folder, image_file))
         image_tensor = image_processor.preprocess(image, return_tensors='pt')['pixel_values'][0]
@@ -68,16 +68,17 @@ def eval_model(args):
         with torch.inference_mode():
             output_ids = model.generate(
                 input_ids,
-                images=image_tensor.unsqueeze(0).half().cuda(),
-                images_cd=(image_tensor_cd.unsqueeze(0).half().cuda() if image_tensor_cd is not None else None),
-                cd_alpha = args.cd_alpha,
-                cd_beta = args.cd_beta,
+                images=image_tensor.unsqueeze(0).half().to(model.device),
+                images_cd=(image_tensor_cd.unsqueeze(0).half().to(model.device) if image_tensor_cd is not None else None),
+                cd_alpha=args.cd_alpha,
+                cd_beta=args.cd_beta,
                 do_sample=True,
                 temperature=args.temperature,
                 top_p=args.top_p,
                 top_k=args.top_k,
                 max_new_tokens=1024,
-                use_cache=True)
+                use_cache=True,
+            )
 
         input_token_len = input_ids.shape[1]
         n_diff_input_output = (input_ids != output_ids[:, :input_token_len]).sum().item()

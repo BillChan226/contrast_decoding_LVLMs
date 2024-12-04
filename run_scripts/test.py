@@ -351,11 +351,7 @@ for image_path in img_path_list:
     image_cd = None
     if decoding_strategy == "vcd":
         image_tensor_cd = add_diffusion_noise(image, args.noise_step)
-        image_cd = (
-            image_tensor_cd.unsqueeze(0).half().cuda()
-            if image_tensor_cd is not None
-            else None
-        )
+        image_cd = image_tensor_cd.unsqueeze(0).half().to(device) if image_tensor_cd is not None else None
         cd_alpha = cd_alpha
         cd_beta = cd_beta
         if model_name == "minigpt4":

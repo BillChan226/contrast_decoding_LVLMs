@@ -62,8 +62,8 @@ set the hyperparameter in the `generate` function:
 ```python
 output_ids = model.generate(
     input_ids,
-    images=image_tensor.unsqueeze(0).half().cuda(),
-    images_cd=(image_tensor_cd.unsqueeze(0).half().cuda() if image_tensor_cd is not None else None),
+    images=image_tensor.unsqueeze(0).half().to(model.device),
+    images_cd=(image_tensor_cd.unsqueeze(0).half().to(model.device) if image_tensor_cd is not None else None),
     cd_alpha = args.cd_alpha,
     cd_beta = args.cd_beta,
     do_sample=True)
